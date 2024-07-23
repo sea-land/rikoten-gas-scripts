@@ -1,7 +1,7 @@
 /**
  * 処理開始の開始点
  */
-function copyTemplateSheets(startRow = 4, endRow = 400, chunkSize = 20) {
+function copyTemplateSheets(startRow = 4, endRow = 50, chunkSize = 20) {
   deleteAllTriggers();
   logToSheet("処理を開始します...");
   processChunk(startRow, endRow, chunkSize);
@@ -20,7 +20,7 @@ function processChunk(startRow, endRow, chunkSize) {
       try {
         logToSheet(`処理中: ${rowIndex} 行目 (${rowData.companyName})`);
         fillTemplateSheets(rowData);
-        createNewSpreadsheet(rowData);
+        createPDF(rowData);
       } catch (error) {
         handleError(rowIndex, error, rowData.companyName);
         return;
@@ -40,7 +40,7 @@ function processChunk(startRow, endRow, chunkSize) {
  */
 function getRowDataInBatch(startRow, endRow) {
   const range = clientSheet.getRange(
-    `${CELL_MAPPING.issueNumber}${startRow}:${CELL_MAPPING.otherDetails}${endRow}`
+    `${CELL_MAPPING.issueNumber}${startRow}:${CELL_MAPPING.contactName}${endRow}`
   );
   const values = range.getValues();
 
@@ -48,12 +48,6 @@ function getRowDataInBatch(startRow, endRow) {
     issueNumber: row[0],
     companyName: row[1],
     contactName: row[2],
-    sponsorshipItem: row[3],
-    distributionCount: row[4],
-    remainingCount: row[5],
-    distributionPlace: row[6],
-    distributionDetails: row[7],
-    otherDetails: row[8],
   }));
 }
 
@@ -62,32 +56,31 @@ function getRowDataInBatch(startRow, endRow) {
  */
 function fillTemplateSheets(data) {
   const templateData = [
-    [data.issueNumber, executionSheet.getRange(CELL_MAPPING.issueDate).getValue()],
+    [data.issueNumber, executionSheet.getRange(CELL_MAPPING.issueDate).getValue(),],
     [data.companyName, data.contactName],
-    [data.sponsorshipItem, data.distributionCount, data.remainingCount],
-    [data.distributionPlace, data.distributionDetails, data.otherDetails],
+    [data.ad1, data.ad1count],
+    [data.ad2, data.ad2count],
+    [data.ad3, data.ad3count],
+    [data.ad4, data.ad4count],
+    [data.ad5, data.ad5count],
   ];
 
+  // 発行番号と発行日
   reportSheet1.getRange(TEMPLATE_CELLS.issueNumber).setValue(templateData[0][0]);
   reportSheet1.getRange(TEMPLATE_CELLS.issueDate).setValue(templateData[0][1]);
+
+  // 企業名と担当者名
   reportSheet1.getRange(TEMPLATE_CELLS.companyName).setValue(templateData[1][0]);
   reportSheet1.getRange(TEMPLATE_CELLS.contactName).setValue(templateData[1][1]);
-  reportSheet1.getRange(TEMPLATE_CELLS.sponsorshipItem).setValue(templateData[2][0]);
-  reportSheet1.getRange(TEMPLATE_CELLS.distributionCount).setValue(templateData[2][1]);
-  reportSheet1.getRange(TEMPLATE_CELLS.remainingCount).setValue(templateData[2][2]);
-  reportSheet1.getRange(TEMPLATE_CELLS.distributionPlace).setValue(templateData[3][0]);
-  reportSheet1.getRange(TEMPLATE_CELLS.distributionDetails).setValue(templateData[3][1]);
-  reportSheet1.getRange(TEMPLATE_CELLS.otherDetails).setValue(templateData[3][2]);
-  reportSheet2.getRange(TEMPLATE_CELLS.issueDate).setValue(templateData[0][1]);
 
   SpreadsheetApp.flush();
 }
 
 /**
- * 新しいスプレッドシートを作成し、テンプレートシートをコピーする。
+ * 新しいスプレッドシートを作成し、テンプレートシートをコピーしてPDFに変換する。
  */
-function createNewSpreadsheet(data) {
-  const fileName = FILE_NAME_FORMAT.replace("{issueNumber}", data.issueNumber).replace("{companyName}", data.companyName);
+function createPDF(data) {
+  const fileName = FILE_NAME_FORMAT.replace("{issueNumber}", data.issueNumber).replace("{companyName}", data.companyName) + ".pdf";
   const newSpreadsheet = SpreadsheetApp.create(fileName);
   reportSheet1.copyTo(newSpreadsheet).setName(reportSheet1.getName());
   reportSheet2.copyTo(newSpreadsheet).setName(reportSheet2.getName());
@@ -102,7 +95,41 @@ function createNewSpreadsheet(data) {
   const folder = DriveApp.getFolderById(folderId);
 
   removeExistingFile(folder, fileName);
-  DriveApp.getFileById(newSpreadsheet.getId()).moveTo(folder);
-
+  saveAsPDF(newSpreadsheet, fileName, folder);
+  DriveApp.getFileById(newSpreadsheet.getId()).setTrashed(true);
   logToSheet(`${fileName} を作成しました。`);
+}
+
+/**
+ * スプレッドシートをPDFに変換して指定フォルダに保存する。
+ */
+function saveAsPDF(sheet, fileName, folder) {
+  const url = createUrlForPdf(sheet);
+  const token = ScriptApp.getOAuthToken();
+  const response = UrlFetchApp.fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  const blob = response.getBlob().setName(fileName);
+  folder.createFile(blob);
+}
+
+/**
+ * PDF出力用のURLを作成する.
+ * @param {Spreadsheet} 出力対象のスプレッドシート.
+ */
+function createUrlForPdf(sheet) {
+  const params = {
+    'exportFormat': 'pdf',
+    'format': 'pdf',
+    'sheetnames': 'false',
+    'printtitle': 'false',
+    'pagenumbers': 'false',
+    'size': 'A4', // 用紙サイズ:A4
+    'portrait': true, // 用紙向き:縦
+    'fitw': true, // 幅を用紙に合わせる
+    'horizontal_alignment': 'CENTER', // 水平方向:中央
+    'gridlines': false, // グリッドライン:非表示
+  }
+  const query = Object.keys(params).map(function (key) {
+    return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+  }).join('&');
+  return `https://docs.google.com/spreadsheets/d/${sheet.getId()}/export?${query}`;
 }
