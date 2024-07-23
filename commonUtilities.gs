@@ -1,22 +1,28 @@
 /**
- * スクリプト実行時に既存のトリガーを削除する
+ * Deletes all existing triggers in the script.
  */
 function deleteAllTriggers() {
   const triggers = ScriptApp.getProjectTriggers();
-  for (const trigger of triggers) {
-    ScriptApp.deleteTrigger(trigger);
-  }
+  triggers.forEach(trigger => ScriptApp.deleteTrigger(trigger));
 }
 
 /**
- * エラーハンドリング
+ * Handles errors by logging them to a sheet.
+ * 
+ * @param {number} rowIndex The index of the row where the error occurred.
+ * @param {Error} error The error object.
+ * @param {string} companyName The name of the company associated with the error.
  */
 function handleError(rowIndex, error, companyName) {
   logToSheet(`エラー: ${rowIndex} 行目 (${companyName}) - ${error.message}`);
 }
 
 /**
- * 時間指定トリガーによる関数の実行設定
+ * Sets up a time-based trigger to continue processing.
+ * 
+ * @param {number} chunkEndRow The end row of the current chunk.
+ * @param {number} endRow The end row of the entire processing range.
+ * @param {number} chunkSize The size of each chunk to be processed.
  */
 function continueProcessing(chunkEndRow, endRow, chunkSize) {
   ScriptApp.newTrigger("continueCopyTemplateSheets").timeBased().after(1000).create();
@@ -26,7 +32,7 @@ function continueProcessing(chunkEndRow, endRow, chunkSize) {
 }
 
 /**
- * プロパティの取得、processChunkの実行
+ * Retrieves properties and continues the chunk processing.
  */
 function continueCopyTemplateSheets() {
   const nextStartRow = parseInt(PropertiesService.getScriptProperties().getProperty("nextStartRow"));
@@ -36,7 +42,9 @@ function continueCopyTemplateSheets() {
 }
 
 /**
- * ログをシートに出力
+ * Logs a message to the log sheet with a timestamp.
+ * 
+ * @param {string} message The message to log.
  */
 function logToSheet(message) {
   const timestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy/MM/dd HH:mm");
@@ -45,7 +53,10 @@ function logToSheet(message) {
 }
 
 /**
- * フォルダのURLからフォルダIDを抽出する。
+ * Extracts the folder ID from a given URL.
+ * 
+ * @param {string} url The URL of the folder.
+ * @return {string} The extracted folder ID.
  */
 function extractFolderIdFromUrl(url) {
   const parts = url.split("/");
@@ -53,7 +64,10 @@ function extractFolderIdFromUrl(url) {
 }
 
 /**
- * 指定されたフォルダ内の同名の既存ファイルを削除
+ * Removes existing files with the same name in the specified folder.
+ * 
+ * @param {Folder} folder The folder to check for existing files.
+ * @param {string} fileName The name of the file to remove.
  */
 function removeExistingFile(folder, fileName) {
   const existingFiles = folder.getFilesByName(fileName);
