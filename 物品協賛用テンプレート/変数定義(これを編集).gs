@@ -23,10 +23,10 @@ const CELL_MAPPING = {
 
 // テンプレートのセル
 const TEMPLATE_CELLS = {
-  issueNumber: "Y1",         // 発行番号
-  issueDate: "Y2",           // 発行日
+  issueNumber: "Z1",         // 発行番号
+  issueDate: "Z2",           // 発行日
   companyName: "A4",         // 企業名
-  contactName: "W5",         // 担当者名
+  contactName: "Y5",         // 担当者名
   sponsorshipItem: "G39",    // 協賛品名
   distributionCount: "G41",  // 配布数
   remainingCount: "V41",     // 残数
