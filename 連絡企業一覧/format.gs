@@ -1,10 +1,37 @@
+const A = 1;
+const B = 2;
+const C = 3;
+const D = 4;
+const E = 5;
+const F = 6;
+const G = 7;
+const H = 8;
+const I = 9;
+const J = 10;
+const K = 11;
+const L = 12;
+const M = 13;
+const N = 14;
+const O = 15;
+const P = 16;
+const Q = 17;
+const R = 18;
+const S = 19;
+const T = 20;
+const U = 21;
+const V = 22;
+const W = 23;
+const X = 24;
+const Y = 25;
+const Z = 26;
+
 /**
- * Apply general style formatting to the entire sheet
+ * Applies general style formatting to the entire sheet.
  * @param {SpreadsheetApp.Spreadsheet} spreadsheet - The active spreadsheet
  */
-function styleFormatting(spreadsheet) {
+function applyGeneralStyle(spreadsheet) {
   var sheet = spreadsheet.getActiveSheet();
-  var range = sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns());
+  var range = sheet.getDataRange();
 
   range
     .setBorder(false, false, false, false, false, false)
@@ -13,162 +40,183 @@ function styleFormatting(spreadsheet) {
 }
 
 /**
- * Set column widths for columns A and B
+ * Sets column widths for columns A and B.
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - The active sheet
  */
-function commonAtoB(sheet) {
-  // Set column width for A to 160
-  sheet.setColumnWidth(1, 160);
-
-  // Set column width for B to 300
-  sheet.setColumnWidth(2, 300);
+function setColumnWidthsAB(sheet) {
+  sheet.setColumnWidth(A, 160);
+  sheet.setColumnWidth(B, 300);
 }
 
 /**
- * Set column widths for columns C to H
+ * Sets column widths for columns C to H.
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - The active sheet
  */
-function commonCtoH(sheet) {
-  // Set column widths for C:G to 100
-  sheet.setColumnWidths(3, 5, 100);
-
-  // Set column width for H to 200
-  sheet.setColumnWidth(8, 200);
+function setColumnWidthsCH(sheet) {
+  sheet.setColumnWidth(C, 100);
+  sheet.setColumnWidth(D, 100);
+  sheet.setColumnWidth(E, 100);
+  sheet.setColumnWidth(F, 130);
+  sheet.setColumnWidth(G, 100);
+  sheet.setColumnWidth(H, 200);
 }
 
 /**
- * Set column widths for columns I to W for goods format
+ * Sets column widths for columns I to W for goods format.
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - The active sheet
  */
-function goodsItoW(sheet) {
+function setColumnWidthsGoodsIW(sheet) {
   var totalColumns = sheet.getMaxColumns();
 
-  // Ensure the columns exist before setting widths
-  if (totalColumns >= 23) {
-    // Set column widths for I:N to 100
-    sheet.setColumnWidths(9, 6, 100);
-
-    // Set column widths for O:P to 150
-    sheet.setColumnWidths(15, 2, 150);
-
-    // Set column widths for Q:U to 100
-    sheet.setColumnWidths(17, 5, 100);
-
-    // Set column widths for V:W to 200
-    sheet.setColumnWidths(22, 2, 200);
+  if (totalColumns >= W) {
+    sheet.setColumnWidth(I, 100);
+    sheet.setColumnWidth(J, 100);
+    sheet.setColumnWidth(K, 100);
+    sheet.setColumnWidth(L, 100);
+    sheet.setColumnWidth(M, 100);
+    sheet.setColumnWidth(N, 100);
+    sheet.setColumnWidth(O, 200);
+    sheet.setColumnWidth(P, 350);
+    sheet.setColumnWidth(Q, 100);
+    sheet.setColumnWidth(R, 100);
+    sheet.setColumnWidth(S, 100);
+    sheet.setColumnWidth(T, 130);
+    sheet.setColumnWidth(U, 200);
+    sheet.setColumnWidth(V, 200);
   }
 }
 
 /**
- * Set column widths for columns I to U for ad format
+ * Sets column widths for columns I to U for ad format.
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - The active sheet
  */
-function adItoU(sheet) {
+function setColumnWidthsAdIU(sheet) {
   var totalColumns = sheet.getMaxColumns();
 
-  // Ensure the columns exist before setting widths
-  if (totalColumns >= 21) {
-    // Set column widths for I:N to 100
-    sheet.setColumnWidths(9, 6, 100);
-
-    // Set column widths for O:P to 150
-    sheet.setColumnWidths(15, 2, 150);
-
-    // Set column widths for Q:S to 100
-    sheet.setColumnWidths(17, 3, 100);
-
-    // Set column widths for T:U to 200
-    sheet.setColumnWidths(20, 2, 200);
+  if (totalColumns >= U) {
+    sheet.setColumnWidth(I, 100);
+    sheet.setColumnWidth(J, 100);
+    sheet.setColumnWidth(K, 100);
+    sheet.setColumnWidth(L, 100);
+    sheet.setColumnWidth(M, 100);
+    sheet.setColumnWidth(N, 100);
+    sheet.setColumnWidth(O, 150);
+    sheet.setColumnWidth(P, 150);
+    sheet.setColumnWidth(Q, 150);
+    sheet.setColumnWidth(R, 150);
+    sheet.setColumnWidth(S, 100);
+    sheet.setColumnWidth(T, 100);
+    sheet.setColumnWidth(U, 130);
+    sheet.setColumnWidth(V, 200);
+    sheet.setColumnWidth(W, 200);
   }
 }
 
 /**
- * Apply summary format, setting column widths from F to the last column
+ * Sets column widths for columns I to U for welcome format.
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - The active sheet
  */
-function summaryFormatting() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  var sheet = spreadsheet.getActiveSheet();
-
-  // Set column widths for F:LAST to 100
-  sheet.setColumnWidths(6, sheet.getMaxColumns() - 6, 100);
+function setColumnWidthsWelcomeIU(sheet) {
+  sheet.setColumnWidth(I, 100);
+  sheet.setColumnWidth(J, 100);
+  sheet.setColumnWidth(K, 100);
+  sheet.setColumnWidth(L, 100);
+  sheet.setColumnWidth(M, 100);
+  sheet.setColumnWidth(N, 100);
+  sheet.setColumnWidth(O, 150);
+  sheet.setColumnWidth(P, 100);
+  sheet.setColumnWidth(Q, 100);
+  sheet.setColumnWidth(R, 100);
+  sheet.setColumnWidth(S, 130);
+  sheet.setColumnWidth(T, 200);
+  sheet.setColumnWidth(U, 200);
 }
 
 /**
- * Apply formatting for company list
+ * Applies summary format, setting column widths from F to the last column.
  */
-function companyFormatting() {
+function applySummaryFormat() {
   var spreadsheet = SpreadsheetApp.getActive();
   var sheet = spreadsheet.getActiveSheet();
-
-  // Set column widths for A:B to 50
-  sheet.setColumnWidths(1, 2, 50);
-
-  // Set column width for C to 160
-  sheet.setColumnWidth(3, 160);
-
-  // Set column width for D to 300
-  sheet.setColumnWidth(4, 300);
-
-  // Set column widths for E:F to 100
-  sheet.setColumnWidths(5, 2, 100);
-
-  // Set column widths for G:LAST to 100
-  sheet.setColumnWidths(7, sheet.getMaxColumns() - 7, 100);
-
-  // Apply general style formatting
-  styleFormatting(spreadsheet);
+  sheet.setColumnWidths(F, sheet.getMaxColumns() - F + 1, 100);
 }
 
 /**
- * Apply formatting for goods sponsorship
+ * Applies formatting for company list.
  */
-function goodsFormatting() {
+function applyCompanyFormat() {
   var spreadsheet = SpreadsheetApp.getActive();
   var sheet = spreadsheet.getActiveSheet();
-  commonAtoB(sheet);
-  commonCtoH(sheet);
-  goodsItoW(sheet);
-  styleFormatting(spreadsheet);
+
+  sheet.setColumnWidth(A, 50);
+  sheet.setColumnWidth(B, 160);
+  sheet.setColumnWidth(C, 300);
+  sheet.setColumnWidths(D, sheet.getMaxColumns() - D + 1, 100);
+
+  applyGeneralStyle(spreadsheet);
 }
 
 /**
- * Apply formatting for ad sponsorship
+ * Applies formatting for goods sponsorship.
  */
-function adFormat() {
+function applyGoodsFormat() {
   var spreadsheet = SpreadsheetApp.getActive();
   var sheet = spreadsheet.getActiveSheet();
-  commonAtoB(sheet);
-  commonCtoH(sheet);
-  adItoU(sheet);
-  styleFormatting(spreadsheet);
+  setColumnWidthsAB(sheet);
+  setColumnWidthsCH(sheet);
+  setColumnWidthsGoodsIW(sheet);
+  applyGeneralStyle(spreadsheet);
+}
+
+/**
+ * Applies formatting for ad sponsorship.
+ */
+function applyAdFormat() {
+  var spreadsheet = SpreadsheetApp.getActive();
+  var sheet = spreadsheet.getActiveSheet();
+  setColumnWidthsAB(sheet);
+  setColumnWidthsCH(sheet);
+  setColumnWidthsAdIU(sheet);
+  applyGeneralStyle(spreadsheet);
+}
+
+/**
+ * Applies formatting for welcome format.
+ */
+function applyWelcomeFormat() {
+  var spreadsheet = SpreadsheetApp.getActive();
+  var sheet = spreadsheet.getActiveSheet();
+  setColumnWidthsAB(sheet);
+  setColumnWidthsCH(sheet);
+  setColumnWidthsWelcomeIU(sheet);
+  applyGeneralStyle(spreadsheet);
 }
 
 /**
  * Applies conditional formatting colors to all cells in the active sheet.
  */
-function setConditionalFormatRules() {
+function applyConditionalFormatting() {
   var spreadsheet = SpreadsheetApp.getActive();
   var sheet = spreadsheet.getActiveSheet();
-  var range = sheet.getDataRange(); // 全セルの範囲を取得
+  var range = sheet.getDataRange();
 
-  // 条件付き書式ルールの設定
   var rules = [
     {
       formula: "=$G1=TRUE",
       backgroundColor: "#FCE8B2",
     },
     {
-      formula:
-        "=OR(INDIRECT(\"'概要'!E41\")=$C1,INDIRECT(\"'概要'!E42\")=$C1,INDIRECT(\"'概要'!E43\")=$C1)",
+      formula: "=OR(INDIRECT(\"'概要'!E41\")=$C1)",
       backgroundColor: "#F4C7C3",
     },
     {
-      formula:
-        "=OR(INDIRECT(\"'概要'!E38\")=$C1,INDIRECT(\"'概要'!E39\")=$C1,INDIRECT(\"'概要'!E40\")=$C1)",
+      formula: "=OR(INDIRECT(\"'概要'!E38\")=$C1,INDIRECT(\"'概要'!E39\")=$C1,INDIRECT(\"'概要'!E40\")=$C1)",
       backgroundColor: "#B7E1CD",
     },
   ];
 
-  // 条件付き書式ルールをクリアする
   var conditionalFormatRules = [];
 
-  // 各ルールを設定して追加する
   rules.forEach(function (rule) {
     var newRule = SpreadsheetApp.newConditionalFormatRule()
       .setRanges([range])
@@ -178,6 +226,5 @@ function setConditionalFormatRules() {
     conditionalFormatRules.push(newRule);
   });
 
-  // シートに設定した条件付き書式ルールを適用する
   sheet.setConditionalFormatRules(conditionalFormatRules);
 }
