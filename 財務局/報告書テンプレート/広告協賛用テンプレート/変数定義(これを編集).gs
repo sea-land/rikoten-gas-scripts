@@ -8,20 +8,22 @@ const logSheet = spreadsheet.getSheetByName("実行ログ");
 
 // セルの定義
 const CELL_MAPPING = {
-  issueNumber: "A", // 発行番号
-  companyName: "B", // 企業名
-  contactName: "C", // 担当者名
-  folderUrl: "A3", // フォルダのURL
-  issueDate: "A7", // 発行日
+  issueNumber: "A",      // 発行番号
+  companyName: "B",      // 企業名
+  contactName: "C",      // 担当者名
+  folderUrl: "A3",       // フォルダのURL
+  issueDate: "A7",       // 発行日
+  string: "A11",         // 中間文字
+  folderUrlForPDF: "A21",// PDF変換後のフォルダ
 };
 
 // テンプレートのセル
 const TEMPLATE_CELLS = {
   issueNumber: "Z1", // 発行番号
-  issueDate: "Z2", // 発行日
+  issueDate: "Z2",   // 発行日
   companyName: "A4", // 企業名
   contactName: "Y5", // 担当者名
 };
 
 // ファイル名のフォーマット
-const FILE_NAME_FORMAT = "{issueNumber}_第70回理工展報告書_{companyName}";
+const FILE_NAME_FORMAT = "{issueNumber}_{string}_{companyName}";

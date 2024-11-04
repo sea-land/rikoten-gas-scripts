@@ -18,7 +18,9 @@ const CELL_MAPPING = {
   distributionDetails: "H", // 配布の詳細
   otherDetails: "I",        // その他
   folderUrl: "A3",          // フォルダのURL
-  issueDate: "A7"           // 発行日
+  issueDate: "A7",          // 発行日
+  string: "A11",            // 中間文字
+  folderUrlForPDF: "A21",   // PDF変換後のフォルダ
 };
 
 // テンプレートのセル
@@ -36,4 +38,4 @@ const TEMPLATE_CELLS = {
 };
 
 // ファイル名のフォーマット
-const FILE_NAME_FORMAT = "{issueNumber}_第70回理工展報告書_{companyName}";
+const FILE_NAME_FORMAT = "{issueNumber}_{string}_{companyName}";

@@ -20,7 +20,7 @@ function processChunk(startRow, endRow, chunkSize) {
       try {
         logToSheet(`処理中: ${rowIndex} 行目 (${rowData.companyName})`);
         fillTemplateSheets(rowData);
-        createPDF(rowData);
+        createNewSpreadsheet(rowData);
       } catch (error) {
         handleError(rowIndex, error, rowData.companyName);
         return;
@@ -77,10 +77,10 @@ function fillTemplateSheets(data) {
 }
 
 /**
- * 新しいスプレッドシートを作成し、テンプレートシートをコピーしてPDFに変換する。
+ * 新しいスプレッドシートを作成し、テンプレートシートをコピーする。
  */
-function createPDF(data) {
-  const fileName = FILE_NAME_FORMAT.replace("{issueNumber}", data.issueNumber).replace("{companyName}", data.companyName) + ".pdf";
+function createNewSpreadsheet(data) {
+  const fileName = FILE_NAME_FORMAT.replace("{issueNumber}", data.issueNumber).replace("{string}", CELL_MAPPING.string).replace("{companyName}", data.companyName);
   const newSpreadsheet = SpreadsheetApp.create(fileName);
   reportSheet1.copyTo(newSpreadsheet).setName(reportSheet1.getName());
   reportSheet2.copyTo(newSpreadsheet).setName(reportSheet2.getName());
@@ -95,41 +95,7 @@ function createPDF(data) {
   const folder = DriveApp.getFolderById(folderId);
 
   removeExistingFile(folder, fileName);
-  saveAsPDF(newSpreadsheet, fileName, folder);
-  DriveApp.getFileById(newSpreadsheet.getId()).setTrashed(true);
+  DriveApp.getFileById(newSpreadsheet.getId()).moveTo(folder);
+
   logToSheet(`${fileName} を作成しました。`);
-}
-
-/**
- * スプレッドシートをPDFに変換して指定フォルダに保存する。
- */
-function saveAsPDF(sheet, fileName, folder) {
-  const url = createUrlForPdf(sheet);
-  const token = ScriptApp.getOAuthToken();
-  const response = UrlFetchApp.fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  const blob = response.getBlob().setName(fileName);
-  folder.createFile(blob);
-}
-
-/**
- * PDF出力用のURLを作成する.
- * @param {Spreadsheet} 出力対象のスプレッドシート.
- */
-function createUrlForPdf(sheet) {
-  const params = {
-    'exportFormat': 'pdf',
-    'format': 'pdf',
-    'sheetnames': 'false',
-    'printtitle': 'false',
-    'pagenumbers': 'false',
-    'size': 'A4', // 用紙サイズ:A4
-    'portrait': true, // 用紙向き:縦
-    'fitw': true, // 幅を用紙に合わせる
-    'horizontal_alignment': 'CENTER', // 水平方向:中央
-    'gridlines': false, // グリッドライン:非表示
-  }
-  const query = Object.keys(params).map(function (key) {
-    return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
-  }).join('&');
-  return `https://docs.google.com/spreadsheets/d/${sheet.getId()}/export?${query}`;
 }
