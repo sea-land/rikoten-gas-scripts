@@ -80,7 +80,8 @@ function fillTemplateSheets(data) {
  * 新しいスプレッドシートを作成し、テンプレートシートをコピーする。
  */
 function createNewSpreadsheet(data) {
-  const fileName = FILE_NAME_FORMAT.replace("{issueNumber}", data.issueNumber).replace("{string}", CELL_MAPPING.string).replace("{companyName}", data.companyName);
+  const stringValue = executionSheet.getRange(CELL_MAPPING.string).getValue();
+  const fileName = FILE_NAME_FORMAT.replace("{issueNumber}", data.issueNumber).replace("{string}", stringValue).replace("{companyName}", data.companyName);
   const newSpreadsheet = SpreadsheetApp.create(fileName);
   reportSheet1.copyTo(newSpreadsheet).setName(reportSheet1.getName());
   reportSheet2.copyTo(newSpreadsheet).setName(reportSheet2.getName());
